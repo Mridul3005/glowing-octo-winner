@@ -25,6 +25,9 @@ VALID_GROUPS = {
     "science": "science",     # Active Science
 }
 
+class ThreadingTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    pass
+    
 class SatelliteRequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         # Enable CORS
@@ -130,7 +133,7 @@ def main():
     # Allow address reuse
     socketserver.TCPServer.allow_reuse_address = True
     
-    with socketserver.TCPServer(("", PORT), SatelliteRequestHandler) as httpd:
+    with ThreadingTCPServer(("", PORT), SatelliteRequestHandler) as httpd:
         print(f"==========================================================")
         print(f"📡 Satellite Tracker Server running at http://localhost:{PORT}")
         print(f"🚀 Press Ctrl+C to stop.")
