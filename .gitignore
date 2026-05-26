@@ -1,0 +1,12 @@
+# Ignore local TLE data cache
+cache/
+
+# Ignore Python bytecode compilation files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore local environment or OS files
+.DS_Store
+.env

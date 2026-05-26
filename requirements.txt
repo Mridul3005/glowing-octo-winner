@@ -1,0 +1,2 @@
+# Zero external dependencies.
+# Our Python backend uses only standard libraries built right into the Python runtime.
