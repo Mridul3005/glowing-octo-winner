@@ -77,9 +77,10 @@ class SatelliteRequestHandler(http.server.SimpleHTTPRequestHandler):
                 # If error reading cache, we will try fetching fresh
                 pass
 
-        # Fetch fresh data from Celestrak's CDN-cached static files
-        # Static files bypass dynamic gp.php firewall blocks on cloud hosting providers like Render!
-        url = f"https://celestrak.org/NORAD/elements/{group}.txt"
+        # Fetch fresh data from Celestrak's GP dynamic query API directly.
+        # Note: We fetch directly from the dynamic gp.php endpoint because Celestrak has deprecated
+        # the legacy static .txt paths (which now redirect using an escaped '&amp;' bug, causing 403 Forbidden).
+        url = f"https://celestrak.org/NORAD/elements/gp.php?GROUP={group}&FORMAT=tle"
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
