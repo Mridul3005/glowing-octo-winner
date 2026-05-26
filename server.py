@@ -6,6 +6,7 @@ import urllib.parse
 import urllib.error
 import os
 import time
+import json
 
 PORT = int(os.environ.get("PORT", 8000))
 CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache")
@@ -76,8 +77,9 @@ class SatelliteRequestHandler(http.server.SimpleHTTPRequestHandler):
                 # If error reading cache, we will try fetching fresh
                 pass
 
-        # Fetch fresh data from Celestrak
-        url = f"https://celestrak.org/NORAD/elements/gp.php?GROUP={group}&FORMAT=tle"
+        # Fetch fresh data from Celestrak's CDN-cached static files
+        # Static files bypass dynamic gp.php firewall blocks on cloud hosting providers like Render!
+        url = f"https://celestrak.org/NORAD/elements/{group}.txt"
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         }
@@ -117,7 +119,7 @@ class SatelliteRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
         error_json = {"error": message}
-        self.wfile.write(urllib.parse.json.dumps(error_json).encode('utf-8'))
+        self.wfile.write(json.dumps(error_json).encode('utf-8'))
 
 def main():
     # Change working directory to this script's directory so it serves static assets properly
